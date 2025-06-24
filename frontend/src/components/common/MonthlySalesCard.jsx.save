@@ -1,0 +1,154 @@
+import React, { useState, useEffect } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import api from '../../api/axiosConfig';
+
+const MonthlySalesCard = ({ title = "Total Penjualan Bulanan" }) => {
+  const [selectedMonth, setSelectedMonth] = useState(new Date());
+  const [monthlyTotal, setMonthlyTotal] = useState(null); // Total untuk bulan yang dipilih
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchSpecificMonthlySales = async () => {
+      setLoading(true);
+      setError(null);
+      const year = selectedMonth.getFullYear();
+      const month = selectedMonth.getMonth() + 1; // getMonth() returns 0-11, so add 1
+
+      try {
+        const response = await api.get('/orders/monthly-sales', {
+          params: { year: year, month: month } // Kirim bulan dan tahun spesifik
+        });
+        setMonthlyTotal(response.data.totalForMonth); // Dapatkan angka float langsung
+      } catch (err) {
+        console.error('Error fetching specific monthly sales:', err);
+        setError('Gagal memuat total penjualan bulan ini.');
+        setMonthlyTotal(null); // Reset total jika ada error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSpecificMonthlySales();
+  }, [selectedMonth]); 
+
+  return (
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8">
+      {/*<h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">{title}</h3>*/}
+      
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-4">
+        {/* Bagian Pilih Bulan */}
+        <div className="flex-1">
+          <label htmlFor="monthPicker" className="block text-gray-700 text-sm font-bold mb-1 dark:text-gray-300">
+            Pilih Bulan:
+          </label>
+          <DatePicker
+            id="monthPicker"
+            selected={selectedMonth}
+            onChange={(date) => setSelectedMonth(date)}
+            dateFormat="MM/yyyy"
+            showMonthYearPicker
+            // Menjadikan input transparan dan tanpa border
+            className="shadow-none appearance-none bg-transparent border-none rounded-none w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-none dark:text-white"
+            wrapperClassName="w-full"
+          />
+        </div>
+
+        {/* Bagian Total Penjualan Bulan Ini */}
+        <div className="flex-1 text-right sm:text-center mt-4 sm:mt-0">
+          {loading ? (
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Memuat total...</p>
+          ) : error ? (
+            <p className="text-red-500 text-sm">{error}</p>
+          ) : (
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Total Penjualan:</p>
+		import React, { useState, useEffect } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import api from '../../api/axiosConfig';
+
+const MonthlySalesCard = ({ title = "Total Penjualan Bulanan" }) => {
+  const [selectedMonth, setSelectedMonth] = useState(new Date());
+  const [monthlyTotal, setMonthlyTotal] = useState(null); // Total untuk bulan yang dipilih
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchSpecificMonthlySales = async () => {
+      setLoading(true);
+      setError(null);
+      const year = selectedMonth.getFullYear();
+      const month = selectedMonth.getMonth() + 1; // getMonth() returns 0-11, so add 1
+
+      try {
+        const response = await api.get('/orders/monthly-sales', {
+          params: { year: year, month: month } // Kirim bulan dan tahun spesifik
+        });
+        setMonthlyTotal(response.data.totalForMonth); // Dapatkan angka float langsung
+      } catch (err) {
+        console.error('Error fetching specific monthly sales:', err);
+        setError('Gagal memuat total penjualan bulan ini.');
+        setMonthlyTotal(null); // Reset total jika ada error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSpecificMonthlySales();
+  }, [selectedMonth]); 
+
+  return (
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8">
+      {/*<h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">{title}</h3>*/}
+      
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-4">
+        {/* Bagian Pilih Bulan */}
+        <div className="flex-1">
+          <label htmlFor="monthPicker" className="block text-gray-700 text-sm font-bold mb-1 dark:text-gray-300">
+            Pilih Bulan:
+          </label>
+          <DatePicker
+            id="monthPicker"
+            selected={selectedMonth}
+            onChange={(date) => setSelectedMonth(date)}
+            dateFormat="MM/yyyy"
+            showMonthYearPicker
+            // Menjadikan input transparan dan tanpa border
+            className="shadow-none appearance-none bg-transparent border-none rounded-none w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-none dark:text-white"
+            wrapperClassName="w-full"
+          />
+        </div>
+
+        {/* Bagian Total Penjualan Bulan Ini */}
+        <div className="flex-1 text-right sm:text-center mt-4 sm:mt-0">
+          {loading ? (
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Memuat total...</p>
+          ) : error ? (
+            <p className="text-red-500 text-sm">{error}</p>
+          ) : (
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Total Penjualan:</p>
+              <p className="text-3xl font-bold text-blue-600 dark:text-blue-400 animate-pulse">
+                Rp{parseFloat(monthlyTotal !== null ? monthlyTotal : 0).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MonthlySalesCard;
+                Rp{parseFloat(monthlyTotal !== null ? monthlyTotal : 0).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MonthlySalesCard;
